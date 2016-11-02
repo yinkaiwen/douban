@@ -3,10 +3,6 @@ Created on 2016年11月2日
 
 @author: yinkaiwen
 用来查找并存储最基本的信息：
-    电影名称
-    评分人数
-    评分
-    详细信息的URL
 '''
 import sqlite3
 
@@ -107,7 +103,7 @@ class CatelogDao(object):
                     info[self.col[14]],
                     info[self.col[16]]
                     )
-                    print(sql)
+#                     print(sql)
                     cursor.execute(sql);
             finally:
                 cursor.close();
