@@ -12,6 +12,7 @@ import re
 import urllib
 import CatelogDao
 import IndexDao
+import ExcelUtils
 
 class DouBanHtml(object):
 
@@ -61,6 +62,7 @@ class DouBanHtml(object):
                         try:
                             # 标题
                             title = movieInfo.find('a', {'class':'nbg'}).get('title')
+                            title = title.replace("\"","");
                             # 详细信息地址
                             detailUrl = movieInfo.find('a', {'class':''}).get('href');
                             # 评分和评分人数tag
@@ -73,6 +75,7 @@ class DouBanHtml(object):
                         except:
                             # 评分人数不足，没有分数
                             start = '0'
+                            continue;
                         
                         try:
                             # 评分人数
@@ -80,7 +83,8 @@ class DouBanHtml(object):
                             num = re.findall(r'(\w*[0-9]+)\w*', num)[0]  # 12306
                         except:
                             # 评分人数不足，
-                            num = '0'
+                            num = '0';
+                            continue;
                         
                         detailReq = request.Request(detailUrl);
                         header = hds[random.randint(0, len(hds)-1)];
@@ -220,18 +224,25 @@ class DouBanHtml(object):
                                     d.saveInfo(rs);
                                     isFinish = 1;
                             except urllib.error.HTTPError as e:
-                                print(url,e);
+                                print(detailUrl,e);
+                                continue;
+                            except Exception as e:
+                                print(e,detailUrl);
                                 continue;
                             
                     indexDao.insertOrUpdateIndex(page);
                     page += 1;
+                    print('下一页-->',page)
                     if page > totalPage :
                         print('page-->', page, 'totalPage-->', totalPage)
                         break;    
                     else:
+                        e = ExcelUtils.ExcelUtils(self.tag);
+                        e.save();
                         print('page-->', page)
-            except :
-                
+            except Exception as e:
+                print('获取基本信息出错:',url);
+                print(e);
                 continue;
         
         

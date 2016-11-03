@@ -63,11 +63,12 @@ class CatelogDao(object):
             try:
                 conn = sqlite3.connect(self.db);
                 cursor = conn.cursor();
-                select_sql = "select * from %s%s where %s = '%s' and %s = %s" % (self.tag,self.detail, self.col[0], info[self.col[0]], self.col[1], info[self.col[1]]);
+                select_sql = "select * from %s%s where %s = \"%s\" and %s = %s" % (self.tag,self.detail, self.col[0], info[self.col[0]], self.col[1], info[self.col[1]]);
+                
                 select = cursor.execute(select_sql);
                 rs = select.fetchall();
                 if len(rs) == 0:
-                    sql = "insert into %s%s (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) values ('%s',%s,%s,'%s',\"%s\",'%s',\"%s\",'%s',%s,%s,%s,%s,%s,%s,\"%s\")" %(
+                    sql = "insert into %s%s ('%s',%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) values (\"%s\",%s,%s,'%s',\"%s\",'%s',\"%s\",'%s',%s,%s,%s,%s,%s,%s,\"%s\")" %(
                      self.tag,
                      self.detail,
                      self.col[0],
@@ -103,7 +104,6 @@ class CatelogDao(object):
                     info[self.col[14]],
                     info[self.col[16]]
                     )
-#                     print(sql)
                     cursor.execute(sql);
             finally:
                 cursor.close();
