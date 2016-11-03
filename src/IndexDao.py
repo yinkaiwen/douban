@@ -2,7 +2,7 @@
 Created on 2016年11月2日
 
 @author: yinkaiwen
-用来记录上次爬到哪里了。
+用来记录上次爬到哪里了,方便程序中断重启后从上次的位置继续记录相应的数据。
 因为界面是动态地，所以这里只是粗糙的记录，并不能准确的反应实际情况：
 可能有部分数据丢失。所以建议一次性将程序跑完
 
@@ -62,7 +62,7 @@ class IndexDao(object):
             if len(rs) == 0:
                 return 0;
             else:
-                return rs[0][0];
+                return rs[0][0]+1;
         finally:
             cursor.close();
             conn.commit();
