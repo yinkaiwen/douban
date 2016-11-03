@@ -4,14 +4,14 @@ Created on 2016年11月2日
 
 用于获取html中信息
 '''
-from src.dao import CatelogDao
 from urllib import request
 import random
 import time
 from bs4 import BeautifulSoup
 import re
 import urllib
-from src.dao.IndexDao import IndexDao
+import CatelogDao
+import IndexDao
 
 class DouBanHtml(object):
 
@@ -34,7 +34,7 @@ class DouBanHtml(object):
         totalPage = 0; 
         d = CatelogDao.CatelogDao(self.tag);
         d.createTable();
-        indexDao = IndexDao(self.tag);
+        indexDao = IndexDao.IndexDao(self.tag);
         indexDao.createTable()
         page = indexDao.getLastPage();
         print('lastpage-->',page);

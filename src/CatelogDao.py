@@ -109,34 +109,17 @@ class CatelogDao(object):
                 cursor.close();
                 conn.commit();
                 conn.close();
-         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+     
+     
+    def getInfo(self):
+        try:
+            sql = 'select * from %s%s'%(self.tag,self.detail);
+            conn = sqlite3.connect(self.db);
+            cursor = conn.cursor();
+            select = cursor.execute(sql);
+            rs = select.fetchall();
+            return rs;
+        finally:
+            cursor.close();
+            conn.commit();
+            conn.close();
