@@ -7,6 +7,7 @@ import DouBanHtml
 from ExcelUtils import ExcelUtils
 
 if __name__ == '__main__':
-    douban = DouBanHtml.DouBanHtml('中国');
+    tag = '中国'
+    douban = DouBanHtml.DouBanHtml(tag);
     douban.getHtmlInfo();
 
