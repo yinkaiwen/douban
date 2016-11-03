@@ -17,6 +17,7 @@ class ExcelUtils(object):
         self.tag = tag;
     
     
+    # 将数据库中的信息保存到Excel中。
     def save(self):
         row0 = [
         u'名称',
