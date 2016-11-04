@@ -12,7 +12,7 @@ class ChinaUtils(object):
 
     def __init__(self):
         self.tag = '中国';
-        self.name = '中国电影（有一定影响力）.xlsx'
+        self.name = '中国电影（有一定影响力）.xls'
         self.db = 'doubanspider.db'
         self.goodPoint = 8.0;#goodPoint以上算高分电影
         self.commentNum = 10000;#commentNum条评论以上可以进入好电影或者烂片的评比环节
@@ -36,7 +36,7 @@ class ChinaUtils(object):
              
             f = xlwt.Workbook();
             ChinaUtils.saveYear(self, f, cursor);
-            f.save('中国电影年表.xlsx')
+            f.save('中国电影年表.xls')
             
         finally:
             cursor.close();
