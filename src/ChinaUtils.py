@@ -18,30 +18,114 @@ class ChinaUtils(object):
         self.commentNum = 10000;#commentNum条评论以上可以进入好电影或者烂片的评比环节
         self.badPoint = 5.0;#badPoint以下算低分电影
         self.effectCommentNum = 3000;# effectCommentNum条评论以上的电影可以进入“有一定影响力”的电影评比环节
-    
+        self.directors = ('冯小刚','徐克','王家卫','张艺谋',
+                          '王晶','姜文','吴宇森','陈凯歌','林超贤'
+                          ,'宁浩','杜琪峰','刘伟强');
+        self.actors = ('张国荣','范冰冰','刘德华','成龙','李连杰','周杰伦',
+                       '鹿晗','李冰冰','周润发','葛优','梁朝伟'
+                       ,'章子怡','谢霆锋','甄子丹','黄渤',
+                       '黄晓明','孙红雷','邓超','吴彦祖','徐峥',
+                       '古天乐');
     # 处理数据库中的数据，并保存到excel中 
     def saveNiceInfo(self):
         try:
             conn = sqlite3.connect(self.db);
             cursor = conn.cursor();
            
-            f = xlwt.Workbook()  # 创建工作簿
-            ChinaUtils.saveBaseInfo(self, f,cursor);
-            ChinaUtils.saveStarAndLogMainNum(self, f, cursor);
-            ChinaUtils.saveGoodMovie(self, f, cursor);
-            ChinaUtils.saveBadMovie(self, f, cursor);
-            ChinaUtils.saveGoodMoveCountAll(self,f,cursor);
-            ChinaUtils.saveBadMovieCountAll(self, f, cursor);
-            f.save(self.name) #保存文件
-             
+#             f = xlwt.Workbook()  # 创建工作簿
+#             ChinaUtils.saveBaseInfo(self, f,cursor);
+#             ChinaUtils.saveStarAndLogMainNum(self, f, cursor);
+#             ChinaUtils.saveGoodMovie(self, f, cursor);
+#             ChinaUtils.saveBadMovie(self, f, cursor);
+#             ChinaUtils.saveGoodMoveCountAll(self,f,cursor);
+#             ChinaUtils.saveBadMovieCountAll(self, f, cursor);
+#             f.save(self.name) #保存文件
+#               
+#             f = xlwt.Workbook();
+#             ChinaUtils.saveYear(self, f, cursor);
+#             f.save('中国电影年表.xls')
+
             f = xlwt.Workbook();
-            ChinaUtils.saveYear(self, f, cursor);
-            f.save('中国电影年表.xls')
+            ChinaUtils.saveDirectors(self, f, cursor);
+            f.save('导演.xls')
+            
+            f = xlwt.Workbook();
+            ChinaUtils.saveActors(self, f, cursor);
+            f.save('演员.xls')
             
         finally:
             cursor.close();
             conn.commit();
             conn.close();
+     
+    def saveDirectors(self,f,cursor):
+        for directorName in self.directors:
+            ChinaUtils.saveDirector(self,f,cursor,directorName);
+        pass;
+    
+    def saveActors(self,f,cursor):
+        for actorName in self.actors:
+            ChinaUtils.saveActor(self,f,cursor,actorName);
+        pass;
+    
+    def saveActor(self,f,cursor,actorName):
+        sql = "select title,star,publish_time from 中国_Detail where  long > 60 and type not like '%纪录片%'  and type not like '' and type not like '%真人秀%' and type not like '%戏曲%' and type not like '%音乐%' and actor like '%actorName%'";
+        sql = sql.replace("actorName", actorName);
+        select = cursor.execute(sql);
+        rs = select.fetchall();
+        row0 = [
+        u'名称',
+        u'评分',
+        u'上映日期',
+        u'上映年份'
+        ]
+        sheet1 = f.add_sheet(u'%s'%(actorName), cell_overwrite_ok=True)  # 创建sheet
+        # 生成第一行
+        for i in range(0, len(row0)):
+            sheet1.write(0, i, row0[i])
+        index = 1;   
+        for item in rs:
+            print(item);
+            title = item[0];
+            star = item[1];
+            time = item[2];
+            year = time[0:4];
+            sheet1.write(index,0,title);
+            sheet1.write(index,1,star);
+            sheet1.write(index,2,time);
+            sheet1.write(index,3,year);
+            index += 1;
+        pass;
+     
+     
+    def saveDirector(self,f,cursor,directorName): 
+        sql = "select title,star,publish_time from 中国_Detail where  long > 60 and type not like '%纪录片%'  and type not like '' and type not like '%真人秀%' and type not like '%戏曲%' and type not like '%音乐%' and director like '%directorName%'";
+        sql = sql.replace("directorName", directorName);
+        select = cursor.execute(sql);
+        rs = select.fetchall();
+        row0 = [
+        u'名称',
+        u'评分',
+        u'上映日期',
+        u'上映年份'
+        ]
+        sheet1 = f.add_sheet(u'%s'%(directorName), cell_overwrite_ok=True)  # 创建sheet
+        # 生成第一行
+        for i in range(0, len(row0)):
+            sheet1.write(0, i, row0[i])
+        index = 1;   
+        for item in rs:
+            print(item);
+            title = item[0];
+            star = item[1];
+            time = item[2];
+            year = time[0:4];
+            sheet1.write(index,0,title);
+            sheet1.write(index,1,star);
+            sheet1.write(index,2,time);
+            sheet1.write(index,3,year);
+            index += 1;
+     
             
     # 保存烂电影到excel
     def saveBadMovie(self,f,cursor):  

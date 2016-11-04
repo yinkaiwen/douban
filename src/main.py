@@ -11,7 +11,7 @@ if __name__ == '__main__':
     douban = DouBanHtml.DouBanHtml(tag);
     douban.getHtmlInfo();
     
-    #如果将数据库下载下来，可以运行下面这两行代码来生成Excel表格
+    #如果将数据库下载下来，可以屏蔽上面3行代码，运行下面这两行代码来生成Excel表格
 #     c = ChinaUtils.ChinaUtils();
 #     c.saveNiceInfo();
     
