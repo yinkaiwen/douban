@@ -13,7 +13,7 @@ from CatelogDao import CatelogDao
 class ExcelUtils(object):
 
     def __init__(self, tag):
-        self.name = "%s电影信息.%s" % (tag,'xlsx');
+        self.name = "%s电影信息.%s" % (tag,'xls');
         self.tag = tag;
     
     
