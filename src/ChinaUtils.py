@@ -7,6 +7,7 @@ Created on 2016年11月3日
 import sqlite3
 import xlwt
 import math
+import Stats
 
 class ChinaUtils(object):
 
@@ -32,18 +33,18 @@ class ChinaUtils(object):
             conn = sqlite3.connect(self.db);
             cursor = conn.cursor();
            
-#             f = xlwt.Workbook()  # 创建工作簿
-#             ChinaUtils.saveBaseInfo(self, f,cursor);
-#             ChinaUtils.saveStarAndLogMainNum(self, f, cursor);
-#             ChinaUtils.saveGoodMovie(self, f, cursor);
-#             ChinaUtils.saveBadMovie(self, f, cursor);
-#             ChinaUtils.saveGoodMoveCountAll(self,f,cursor);
-#             ChinaUtils.saveBadMovieCountAll(self, f, cursor);
-#             f.save(self.name) #保存文件
-#               
-#             f = xlwt.Workbook();
-#             ChinaUtils.saveYear(self, f, cursor);
-#             f.save('中国电影年表.xls')
+            f = xlwt.Workbook()  # 创建工作簿
+            ChinaUtils.saveBaseInfo(self, f,cursor);
+            ChinaUtils.saveStarAndLogMainNum(self, f, cursor);
+            ChinaUtils.saveGoodMovie(self, f, cursor);
+            ChinaUtils.saveBadMovie(self, f, cursor);
+            ChinaUtils.saveGoodMoveCountAll(self,f,cursor);
+            ChinaUtils.saveBadMovieCountAll(self, f, cursor);
+            f.save(self.name) #保存文件
+               
+            f = xlwt.Workbook();
+            ChinaUtils.saveYear(self, f, cursor);
+            f.save('中国电影年表.xls')
 
             f = xlwt.Workbook();
             ChinaUtils.saveDirectors(self, f, cursor);
@@ -83,11 +84,17 @@ class ChinaUtils(object):
         # 生成第一行
         for i in range(0, len(row0)):
             sheet1.write(0, i, row0[i])
-        index = 1;   
+        index = 1;
+        points = [];   
         for item in rs:
-            print(item);
+#             print(item);
             title = item[0];
             star = item[1];
+            #张国荣有些矫情，有个同名同姓的演员，特此处理了下。
+            if actorName=='张国荣':
+                if title=='猫脸老太太':
+                    continue;
+            points.append(star);
             time = item[2];
             year = time[0:4];
             sheet1.write(index,0,title);
@@ -95,8 +102,14 @@ class ChinaUtils(object):
             sheet1.write(index,2,time);
             sheet1.write(index,3,year);
             index += 1;
-        pass;
-     
+        
+        stats = Stats.Stats(points);
+        textStr = "%s参与了%s部电影，最高评分%s,最低评分%s,中位数得分%s,平均得分%.1f,标准差%.4f"%(actorName
+                    ,stats.count(),stats.max(),stats.min(),stats.median(),stats.avg(),stats.stdev());
+        print(textStr);
+        output = open('演员信息.txt', 'a');
+        output.write("%s\n"%(textStr));
+        output.close();
      
     def saveDirector(self,f,cursor,directorName): 
         sql = "select title,star,publish_time from 中国_Detail where  long > 60 and type not like '%纪录片%'  and type not like '' and type not like '%真人秀%' and type not like '%戏曲%' and type not like '%音乐%' and director like '%directorName%'";
@@ -114,10 +127,12 @@ class ChinaUtils(object):
         for i in range(0, len(row0)):
             sheet1.write(0, i, row0[i])
         index = 1;   
+        points =[];
         for item in rs:
-            print(item);
+#             print(item);
             title = item[0];
             star = item[1];
+            points.append(star);
             time = item[2];
             year = time[0:4];
             sheet1.write(index,0,title);
@@ -125,7 +140,14 @@ class ChinaUtils(object):
             sheet1.write(index,2,time);
             sheet1.write(index,3,year);
             index += 1;
-     
+            
+        stats = Stats.Stats(points);
+        textStr = "%s参与了%s部电影，最高评分%s,最低评分%s,中位数得分%s,平均得分%.1f,标准差%.4f"%(directorName
+                    ,stats.count(),stats.max(),stats.min(),stats.median(),stats.avg(),stats.stdev());
+        print(stats.percentile(80));
+        output = open('导演信息.txt', 'a');
+        output.write("%s\n"%(textStr));
+        output.close();
             
     # 保存烂电影到excel
     def saveBadMovie(self,f,cursor):  
@@ -378,5 +400,27 @@ class ChinaUtils(object):
             sheet1.write(index,13,oneStar);
             sheet1.write(index,14,scriptWriter);
             index += 1;
-            
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
             
